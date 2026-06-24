@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minimal Rubik Timer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Minimal Rubik Timer - Float Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Mặc định màu sắc */
             --bg-color: #121212;
             --text-color: #ffffff;
             --accent-color: #4CAF50;
@@ -24,28 +23,25 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
-        /* Hiệu ứng mượt mà khi hiện lại giao diện */
         .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Class dùng để ẩn giao diện ngay lập tức khi đang giải */
         .hidden-instant { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; transition: none !important; }
 
-        /* Vùng UI tổng */
         #ui-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             position: relative;
             z-index: 10;
         }
@@ -55,154 +51,145 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
             min-height: 80px;
         }
         #scramble-display {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 600;
             text-align: center;
             flex: 1;
-            padding: 0 20px;
+            padding: 0 40px;
             letter-spacing: 2px;
             line-height: 1.4;
+            opacity: 0.85;
         }
         .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.5rem;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: 0.2s;
+            background: none; border: none; color: var(--text-color);
+            font-size: 1.5rem; cursor: pointer; opacity: 0.4;
+            transition: all 0.3s ease;
         }
-        .icon-btn:hover { opacity: 1; color: var(--accent-color); }
+        .icon-btn:hover { opacity: 1; color: var(--accent-color); transform: rotate(90deg); }
 
         /* TIMER AREA */
         #timer-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5;
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;
         }
         #timer {
-            font-size: 10vw;
-            font-variant-numeric: tabular-nums;
-            font-weight: 800;
-            letter-spacing: -2px;
-            transition: color 0.1s ease, text-shadow 0.3s ease;
-            cursor: pointer;
+            font-size: 12vw; font-variant-numeric: tabular-nums; font-weight: 800;
+            letter-spacing: -3px; transition: color 0.1s ease, text-shadow 0.4s ease; cursor: pointer;
         }
-        /* Hiệu ứng trạng thái */
+        
         .state-red { color: #f44336 !important; }
         .state-green { color: var(--accent-color) !important; }
         .state-warning { color: #ff9800 !important; animation: blinkWarning 0.5s infinite alternate; }
-        .pb-anim { animation: pbPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--accent-color); text-shadow: 0 0 20px var(--accent-color); }
+        .pb-anim { animation: pbPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--accent-color); text-shadow: 0 0 30px rgba(76, 175, 80, 0.4); }
         .idle-anim { animation: idleGlow 4s infinite alternate; }
 
         @keyframes blinkWarning { from { opacity: 1; } to { opacity: 0.3; } }
         @keyframes pbPop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes idleGlow {
-            0% { text-shadow: 0 0 10px transparent; }
-            100% { text-shadow: 0 0 30px rgba(255,255,255,0.15); }
-        }
+        @keyframes idleGlow { 0% { text-shadow: 0 0 0px transparent; } 100% { text-shadow: 0 0 40px rgba(255,255,255,0.08); } }
 
-        /* BOTTOM STATS & HISTORY */
-        .bottom-section {
+        /* MỚI: BOTTOM LAYOUT GỌN GÀNG - TRỐNG TRẢI */
+        .bottom-layout {
             display: flex;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: flex-end;
             margin-top: auto;
-            max-height: 35vh;
+            pointer-events: none; /* Tránh cản chuột ở vùng giữa */
         }
-        .panel {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            flex: 1;
-            backdrop-filter: blur(10px);
-            overflow-y: auto;
-        }
-        /* Scrollbar custom */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 1.1rem; }
-        .stat-item span { font-weight: 800; color: var(--accent-color); float: right;}
-        
-        .history-list { list-style: none; font-family: monospace; font-size: 1rem; }
-        .history-item { 
-            display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); 
-            align-items: center; cursor: pointer; transition: 0.2s;
+        .stats-block, .history-block {
+            pointer-events: auto; /* Mở lại chuột cho 2 góc */
+            opacity: 0.25; /* Mặc định mờ để nhường chỗ trung tâm */
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .history-item:hover { background: rgba(255,255,255,0.1); }
-        .h-index { opacity: 0.5; width: 30px; }
-        .h-time { font-weight: bold; flex: 1; }
-        .h-ao5, .h-ao12 { opacity: 0.7; width: 60px; text-align: right; }
+
+        /* Hiệu ứng khi rê chuột vào 2 bên góc */
+        .stats-block:hover, .history-block:hover { opacity: 1; }
+        .stats-block:hover { transform: translateX(10px) translateY(-5px); }
+        .history-block:hover { transform: translateX(-10px) translateY(-5px); }
+
+        /* THỐNG KÊ (BÊN TRÁI) */
+        .stats-block {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .stat-line {
+            display: flex; justify-content: space-between; align-items: baseline;
+            width: 130px; font-size: 1.1rem; transition: color 0.2s;
+        }
+        .stat-line:hover { color: var(--accent-color); }
+        .stat-label { font-weight: 300; opacity: 0.6; font-size: 0.95rem; }
+        .stat-val { font-weight: 800; font-family: monospace; font-size: 1.2rem; text-align: right;}
+
+        /* LỊCH SỬ (BÊN PHẢI) */
+        .history-block {
+            width: 260px;
+            max-height: 25vh;
+            overflow-y: auto;
+            padding: 20px 0; /* Padding để scroll không cắt chữ */
+            /* Tạo mask mờ dần ở 2 mép trên dưới để cuộn siêu mượt */
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+        .history-block::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn cho gọn */
+
+        .clean-history { list-style: none; font-family: monospace; }
+        .history-item { 
+            padding: 8px 15px; border-radius: 8px; margin-bottom: 4px;
+            transition: all 0.2s ease; cursor: pointer;
+        }
+        .history-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.03); }
         
-        /* Tooltip Scramble cho History */
-        .history-item[title] { position: relative; }
+        .h-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .h-index { width: 30px; opacity: 0.3; font-size: 0.85rem; }
+        .h-time { flex: 1; font-weight: 800; font-size: 1.15rem; text-align: center; color: var(--text-color); transition: 0.2s; }
+        .h-ao5 { width: 50px; opacity: 0.4; font-size: 0.9rem; text-align: right; }
+        
+        .history-item:hover .h-time { color: var(--accent-color); letter-spacing: 1px; }
 
         /* Menu Hành động khi click vào History */
-        .history-actions { display: flex; gap: 5px; }
+        .history-actions { display: flex; gap: 5px; justify-content: space-between; width: 100%; animation: fadeInUp 0.2s forwards; }
         .history-actions button {
-            background: rgba(255,255,255,0.1); border: none; color: var(--text-color);
-            padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+            background: rgba(255,255,255,0.08); border: none; color: var(--text-color);
+            padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+            transition: 0.2s; flex: 1;
         }
-        .history-actions button:hover { background: var(--accent-color); }
-        .history-actions .btn-del:hover { background: #f44336; }
+        .history-actions button:hover { background: var(--accent-color); color: #000; transform: translateY(-2px); }
+        .history-actions .btn-del:hover { background: #f44336; color: #fff; }
 
         /* SETTINGS MODAL */
         #settings-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 100;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100;
+            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
         }
         #settings-modal.active { opacity: 1; pointer-events: auto; }
-        .settings-content {
-            background: #1e1e1e; padding: 30px; border-radius: 16px;
-            width: 90%; max-width: 400px; color: #fff;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .settings-content h2 { margin-bottom: 20px; text-align: center; color: var(--accent-color); }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .setting-row label { font-size: 1.1rem; }
-        input[type="color"] {
-            border: none; border-radius: 4px; width: 30px; height: 30px; cursor: pointer;
-            background: none; padding: 0;
-        }
+        .settings-content { background: #1a1a1a; padding: 40px; border-radius: 20px; width: 90%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .settings-content h2 { margin-bottom: 30px; text-align: center; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        input[type="color"] { border: none; border-radius: 8px; width: 35px; height: 35px; cursor: pointer; background: none; padding: 0; }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
         
-        /* Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #555; transition: .4s; border-radius: 20px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-color); }
         input:checked + .slider:before { transform: translateX(20px); }
         
         #close-settings {
-            width: 100%; padding: 10px; margin-top: 15px; border: none;
-            background: var(--accent-color); color: #fff; font-weight: bold;
-            border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+            width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--accent-color); color: #000; font-weight: 800;
+            border-radius: 10px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
         }
-        #close-settings:hover { opacity: 0.8; }
+        #close-settings:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3); }
 
         @media (max-width: 768px) {
-            .bottom-section { flex-direction: column; }
-            #timer { font-size: 20vw; }
-            .header { min-height: 100px; }
-            #scramble-display { font-size: 1.2rem; }
+            .stats-block, .history-block { opacity: 0.7; } /* Trên đt rõ hơn chút vì không có chuột hover */
+            #timer { font-size: 22vw; }
+            .header { min-height: 100px; padding-top: 10px; }
+            #scramble-display { font-size: 1.2rem; padding: 0 10px; }
+            .bottom-layout { padding-bottom: 20px; }
         }
     </style>
 </head>
@@ -218,21 +205,19 @@
             <button id="settings-btn" class="icon-btn">⚙️</button>
         </div>
 
-        <div style="flex:1;"></div>
-
-        <div class="bottom-section">
-            <div class="panel stats-panel">
-                <div class="stats-grid">
-                    <div class="stat-item">Solves: <span id="stat-count">0</span></div>
-                    <div class="stat-item">Best: <span id="stat-best">-</span></div>
-                    <div class="stat-item">ao5: <span id="stat-ao5">-</span></div>
-                    <div class="stat-item">ao12: <span id="stat-ao12">-</span></div>
-                </div>
+        <div class="bottom-layout">
+            <!-- Thống kê trái -->
+            <div class="stats-block">
+                <div class="stat-line"><span class="stat-label">Solves</span><span id="stat-count" class="stat-val">0</span></div>
+                <div class="stat-line"><span class="stat-label">Best</span><span id="stat-best" class="stat-val">-</span></div>
+                <div class="stat-line"><span class="stat-label">ao5</span><span id="stat-ao5" class="stat-val">-</span></div>
+                <div class="stat-line"><span class="stat-label">ao12</span><span id="stat-ao12" class="stat-val">-</span></div>
             </div>
             
-            <div class="panel history-panel">
-                <ul class="history-list" id="history-list">
-                    <!-- JS sẽ render history ở đây -->
+            <!-- Lịch sử phải -->
+            <div class="history-block">
+                <ul class="clean-history" id="history-list">
+                    <!-- JS Render -->
                 </ul>
             </div>
         </div>
@@ -241,17 +226,17 @@
     <!-- Settings Modal -->
     <div id="settings-modal">
         <div class="settings-content">
-            <h2>Cài Đặt</h2>
+            <h2>TÙY CHỈNH</h2>
             <div class="setting-row">
-                <label>Bật Inspect (15s)</label>
+                <label>Bật đếm ngược (15s)</label>
                 <label class="switch"><input type="checkbox" id="set-inspect"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
-                <label>Ẩn thời gian khi giải</label>
+                <label>Ẩn giao diện khi giải</label>
                 <label class="switch"><input type="checkbox" id="set-hide-timer"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
-                <label>Hiệu ứng Idle</label>
+                <label>Hiệu ứng ánh sáng rảnh</label>
                 <label class="switch"><input type="checkbox" id="set-idle-anim"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
@@ -263,29 +248,24 @@
                 <input type="color" id="set-text-color">
             </div>
             <div class="setting-row">
-                <label>Màu nhấn (Accent)</label>
+                <label>Màu nhấn (Nút/Điểm)</label>
                 <input type="color" id="set-accent-color">
             </div>
-            <button id="close-settings">Đóng</button>
+            <button id="close-settings">XÁC NHẬN</button>
         </div>
     </div>
 
     <script>
-        // Lấy các Elements
         const timerEl = document.getElementById('timer');
         const uiWrapper = document.getElementById('ui-wrapper');
         const scrambleDisplay = document.getElementById('scramble-display');
         const historyList = document.getElementById('history-list');
         const statsObj = { count: document.getElementById('stat-count'), best: document.getElementById('stat-best'), ao5: document.getElementById('stat-ao5'), ao12: document.getElementById('stat-ao12') };
         
-        // --- LOGIC CÀI ĐẶT (SETTINGS) ---
-        let settings = {
-            inspect: true, hideTimer: false, idleAnim: true,
-            bgColor: '#121212', textColor: '#ffffff', accentColor: '#4CAF50'
-        };
+        let settings = { inspect: true, hideTimer: false, idleAnim: true, bgColor: '#121212', textColor: '#ffffff', accentColor: '#4CAF50' };
 
         function loadSettings() {
-            const saved = localStorage.getItem('rubik_settings');
+            const saved = localStorage.getItem('rubik_settings_v2');
             if(saved) settings = { ...settings, ...JSON.parse(saved) };
             
             document.getElementById('set-inspect').checked = settings.inspect;
@@ -305,7 +285,7 @@
             settings.bgColor = document.getElementById('set-bg-color').value;
             settings.textColor = document.getElementById('set-text-color').value;
             settings.accentColor = document.getElementById('set-accent-color').value;
-            localStorage.setItem('rubik_settings', JSON.stringify(settings));
+            localStorage.setItem('rubik_settings_v2', JSON.stringify(settings));
             applyTheme();
         }
 
@@ -318,23 +298,15 @@
             else timerEl.classList.remove('idle-anim');
         }
 
-        // --- SCRAMBLE GENERATOR ---
         function generateScramble() {
-            const moves = ['U', 'D', 'L', 'R', 'F', 'B'];
-            const modifiers = ['', "'", '2'];
-            let scramble = [];
-            let lastAxis = -1, prevAxis = -1;
-            const length = Math.floor(Math.random() * 3) + 20; // 20-22 bước
-            
+            const moves = ['U', 'D', 'L', 'R', 'F', 'B']; const modifiers = ['', "'", '2'];
+            let scramble = []; let lastAxis = -1, prevAxis = -1;
+            const length = Math.floor(Math.random() * 3) + 20; 
             for(let i=0; i<length; i++) {
                 let axis, move;
-                do {
-                    move = Math.floor(Math.random() * 6);
-                    axis = Math.floor(move / 2);
-                } while (axis === lastAxis || (axis === prevAxis && Math.floor(lastAxis/2) === axis));
-                
-                prevAxis = lastAxis;
-                lastAxis = axis;
+                do { move = Math.floor(Math.random() * 6); axis = Math.floor(move / 2); } 
+                while (axis === lastAxis || (axis === prevAxis && Math.floor(lastAxis/2) === axis));
+                prevAxis = lastAxis; lastAxis = axis;
                 scramble.push(moves[move] + modifiers[Math.floor(Math.random() * 3)]);
             }
             return scramble.join(' ');
@@ -342,43 +314,30 @@
         let currentScramble = generateScramble();
         scrambleDisplay.innerText = currentScramble;
 
-        // --- TIMER STATE MACHINE ---
-        // States: IDLE -> INSPECTING -> HOLDING (Ready to start) -> SOLVING -> FINISHED
         let state = 'IDLE'; 
         let timerInterval, inspectInterval;
-        let startTime = 0, inspectStartTime = 0;
-        let currentInspectTime = 15;
-        let isHolding = false;
-        let penalty = 0; // 0: no, 2: +2, -1: DNF
+        let startTime = 0, inspectStartTime = 0, currentInspectTime = 15;
+        let penalty = 0; 
 
-        // --- LƯU TRỮ LỊCH SỬ ---
-        let solves = JSON.parse(localStorage.getItem('rubik_history')) || [];
+        let solves = JSON.parse(localStorage.getItem('rubik_history_v2')) || [];
 
         function formatTime(ms) {
             if(ms === -1 || ms === Infinity || isNaN(ms)) return "DNF";
-            let d = new Date(ms);
-            let m = d.getUTCMinutes();
-            let s = d.getUTCSeconds();
+            let d = new Date(ms), m = d.getUTCMinutes(), s = d.getUTCSeconds();
             let milli = Math.floor(d.getUTCMilliseconds() / 10);
             milli = milli < 10 ? '0'+milli : milli;
             if (m > 0) return `${m}:${s < 10 ? '0'+s : s}.${milli}`;
             return `${s}.${milli}`;
         }
 
-        // Tính trung bình WCA (bỏ 1 tốt nhất, 1 tệ nhất)
         function calcAverage(n) {
             if (solves.length < n) return '-';
             let recent = solves.slice(0, n);
             let times = recent.map(s => s.penalty === -1 ? Infinity : s.time + (s.penalty === 2 ? 2000 : 0));
             let dnfs = times.filter(t => t === Infinity).length;
             if (dnfs > 1) return 'DNF';
-            
-            times.sort((a, b) => a - b);
-            times.pop(); // bỏ tệ nhất (hoặc DNF)
-            times.shift(); // bỏ tốt nhất
-            
-            let sum = times.reduce((a,b) => a+b, 0);
-            return formatTime(sum / (n - 2));
+            times.sort((a, b) => a - b); times.pop(); times.shift(); 
+            return formatTime(times.reduce((a,b) => a+b, 0) / (n - 2));
         }
 
         function updateStats() {
@@ -399,22 +358,21 @@
 
                 let li = document.createElement('li');
                 li.className = 'history-item';
-                li.title = solve.scramble; // Hover hiện scramble
+                li.title = solve.scramble; 
                 
-                // Content hiển thị
                 li.innerHTML = `
-                    <div class="h-index">${actualIndex}</div>
-                    <div class="h-time">${displayTime}</div>
-                    <div class="h-ao5">${solve.ao5 || '-'}</div>
-                    <div class="h-ao12">${solve.ao12 || '-'}</div>
+                    <div class="h-content">
+                        <div class="h-index">${actualIndex}</div>
+                        <div class="h-time">${displayTime}</div>
+                        <div class="h-ao5">${solve.ao5 || '-'}</div>
+                    </div>
                 `;
 
-                // Tạo nút sửa xoá khi click vào
-                li.onclick = () => {
-                    // Nếu đã có nút actions thì toggle ẩn/hiện, nếu chưa thì tạo
+                li.onclick = (e) => {
+                    e.stopPropagation();
                     if(li.querySelector('.history-actions')) {
                         li.querySelector('.history-actions').remove();
-                        li.querySelector('.h-time').style.display = 'block';
+                        li.querySelector('.h-content').style.display = 'flex';
                     } else {
                         let actDiv = document.createElement('div');
                         actDiv.className = 'history-actions';
@@ -422,16 +380,16 @@
                             <button onclick="modifySolve(${actualIndex-1}, 'ok', event)">OK</button>
                             <button onclick="modifySolve(${actualIndex-1}, '+2', event)">+2</button>
                             <button onclick="modifySolve(${actualIndex-1}, 'dnf', event)">DNF</button>
-                            <button class="btn-del" onclick="modifySolve(${actualIndex-1}, 'del', event)">🗑️</button>
+                            <button class="btn-del" onclick="modifySolve(${actualIndex-1}, 'del', event)">Xóa</button>
                         `;
-                        li.querySelector('.h-time').style.display = 'none';
-                        li.insertBefore(actDiv, li.querySelector('.h-ao5'));
+                        li.querySelector('.h-content').style.display = 'none';
+                        li.appendChild(actDiv);
                     }
                 }
                 historyList.appendChild(li);
             });
             updateStats();
-            localStorage.setItem('rubik_history', JSON.stringify(solves));
+            localStorage.setItem('rubik_history_v2', JSON.stringify(solves));
         }
 
         window.modifySolve = function(index, action, e) {
@@ -441,7 +399,6 @@
             else if(action === '+2') solves[index].penalty = 2;
             else if(action === 'dnf') solves[index].penalty = -1;
             
-            // Recalculate averages for subsequent solves
             for(let i = index; i < solves.length; i++) {
                 solves[i].ao5 = i >= 4 ? calcAverageArray(solves.slice(i-4, i+1)) : '-';
                 solves[i].ao12 = i >= 11 ? calcAverageArray(solves.slice(i-11, i+1)) : '-';
@@ -453,171 +410,98 @@
             let times = arr.map(s => s.penalty === -1 ? Infinity : s.time + (s.penalty === 2 ? 2000 : 0));
             let dnfs = times.filter(t => t === Infinity).length;
             if (dnfs > 1) return 'DNF';
-            times.sort((a,b) => a-b);
-            times.pop(); times.shift();
+            times.sort((a,b) => a-b); times.pop(); times.shift();
             return formatTime(times.reduce((a,b)=>a+b,0) / (arr.length - 2));
         }
 
-        // --- CORE TIMER LOGIC ---
         function setTimerDisplay(text) { timerEl.innerText = text; }
 
         function hideUI() {
-            uiWrapper.classList.remove('fade-in-up');
-            uiWrapper.classList.add('hidden-instant');
-            timerEl.classList.remove('idle-anim');
-            timerEl.classList.remove('pb-anim');
+            uiWrapper.classList.remove('fade-in-up'); uiWrapper.classList.add('hidden-instant');
+            timerEl.classList.remove('idle-anim', 'pb-anim');
             if(settings.hideTimer) setTimerDisplay('...');
         }
 
         function showUI() {
-            uiWrapper.classList.remove('hidden-instant');
-            uiWrapper.classList.add('fade-in-up');
+            uiWrapper.classList.remove('hidden-instant'); uiWrapper.classList.add('fade-in-up');
             if(settings.idleAnim) timerEl.classList.add('idle-anim');
         }
 
         function startInspect() {
-            state = 'INSPECTING';
-            hideUI();
-            currentInspectTime = 15;
-            penalty = 0;
-            setTimerDisplay(currentInspectTime);
-            inspectStartTime = performance.now();
+            state = 'INSPECTING'; hideUI(); currentInspectTime = 15; penalty = 0;
+            setTimerDisplay(currentInspectTime); inspectStartTime = performance.now();
             
             inspectInterval = setInterval(() => {
                 let elapsed = Math.floor((performance.now() - inspectStartTime) / 1000);
                 currentInspectTime = 15 - elapsed;
                 
-                if (currentInspectTime > 3 && currentInspectTime <= 15) {
-                    setTimerDisplay(currentInspectTime);
-                    timerEl.className = '';
-                } else if (currentInspectTime > 0 && currentInspectTime <= 3) {
-                    setTimerDisplay(currentInspectTime);
-                    timerEl.className = 'state-warning';
-                } else if (currentInspectTime <= 0 && currentInspectTime >= -1) {
-                    setTimerDisplay("+2");
-                    timerEl.className = 'state-red';
-                    penalty = 2;
-                } else if (currentInspectTime < -1) {
-                    setTimerDisplay("DNF");
-                    penalty = -1;
-                    clearInterval(inspectInterval);
-                    state = 'IDLE';
-                    showUI();
-                }
+                if (currentInspectTime > 3 && currentInspectTime <= 15) { setTimerDisplay(currentInspectTime); timerEl.className = ''; } 
+                else if (currentInspectTime > 0 && currentInspectTime <= 3) { setTimerDisplay(currentInspectTime); timerEl.className = 'state-warning'; } 
+                else if (currentInspectTime <= 0 && currentInspectTime >= -1) { setTimerDisplay("+2"); timerEl.className = 'state-red'; penalty = 2; } 
+                else if (currentInspectTime < -1) { setTimerDisplay("DNF"); penalty = -1; clearInterval(inspectInterval); state = 'IDLE'; showUI(); }
             }, 100);
         }
 
         function startTimer() {
-            state = 'SOLVING';
-            timerEl.className = '';
+            state = 'SOLVING'; timerEl.className = '';
             if(settings.hideTimer) setTimerDisplay('...');
             startTime = performance.now();
             timerInterval = setInterval(() => {
-                if(!settings.hideTimer) {
-                    let elapsed = performance.now() - startTime;
-                    setTimerDisplay(formatTime(elapsed));
-                }
-            }, 30); // 30ms update for smooth visually
+                if(!settings.hideTimer) setTimerDisplay(formatTime(performance.now() - startTime));
+            }, 30); 
         }
 
         function stopTimer() {
             clearInterval(timerInterval);
-            let finalTime = performance.now() - startTime;
-            state = 'FINISHED';
+            let finalTime = performance.now() - startTime; state = 'FINISHED';
             
             let displayTime = formatTime(finalTime);
             if(penalty === 2) { displayTime += "+"; finalTime += 2000; }
             if(penalty === -1) { displayTime = "DNF"; }
-            
             setTimerDisplay(displayTime);
             
-            // PB Check
             let validSolves = solves.filter(s => s.penalty !== -1).map(s => s.time + (s.penalty === 2 ? 2000 : 0));
-            let isPB = validSolves.length > 0 && penalty !== -1 && finalTime < Math.min(...validSolves);
-            if(isPB) timerEl.classList.add('pb-anim');
+            if(validSolves.length > 0 && penalty !== -1 && finalTime < Math.min(...validSolves)) timerEl.classList.add('pb-anim');
 
-            // Save Solve
-            solves.push({
-                time: penalty === -1 ? Infinity : finalTime - (penalty === 2 ? 2000 : 0),
-                penalty: penalty,
-                scramble: currentScramble,
-                ao5: '-', ao12: '-' // Tạm thời
-            });
-            // Update average
-            solves[solves.length-1].ao5 = calcAverage(5);
-            solves[solves.length-1].ao12 = calcAverage(12);
+            solves.push({ time: penalty === -1 ? Infinity : finalTime - (penalty === 2 ? 2000 : 0), penalty: penalty, scramble: currentScramble, ao5: '-', ao12: '-' });
+            solves[solves.length-1].ao5 = calcAverage(5); solves[solves.length-1].ao12 = calcAverage(12);
             
-            renderHistory();
-            showUI();
-            currentScramble = generateScramble();
-            scrambleDisplay.innerText = currentScramble;
-
-            setTimeout(() => { state = 'IDLE'; }, 500); // Ngăn double click
+            renderHistory(); showUI();
+            currentScramble = generateScramble(); scrambleDisplay.innerText = currentScramble;
+            setTimeout(() => { state = 'IDLE'; }, 500); 
         }
 
-        // EVENT HANDLERS
         function handleDown(e) {
-            if(e.type === 'keydown' && e.code !== 'Space') {
-                if(state === 'SOLVING') stopTimer();
-                return;
-            }
+            if(e.type === 'keydown' && e.code !== 'Space') { if(state === 'SOLVING') stopTimer(); return; }
             if(e.type === 'keydown' && e.repeat) return;
-            if(e.target.closest('#ui-wrapper') && e.target.tagName !== 'DIV' && state === 'IDLE') return; // Click vào nút/settings
+            if(e.target.closest('#ui-wrapper') && e.target.tagName !== 'DIV' && state === 'IDLE') return; 
 
             if (state === 'IDLE') {
-                if(settings.inspect) {
-                    startInspect();
-                } else {
-                    state = 'HOLDING';
-                    hideUI();
-                    timerEl.className = 'state-red';
-                    setTimeout(() => { if(state === 'HOLDING') timerEl.className = 'state-green'; }, 300);
-                }
+                if(settings.inspect) startInspect();
+                else { state = 'HOLDING'; hideUI(); timerEl.className = 'state-red'; setTimeout(() => { if(state === 'HOLDING') timerEl.className = 'state-green'; }, 300); }
             } else if (state === 'INSPECTING') {
-                clearInterval(inspectInterval);
-                state = 'HOLDING';
-                timerEl.className = 'state-red';
-                setTimeout(() => { if(state === 'HOLDING') timerEl.className = 'state-green'; }, 300);
-            } else if (state === 'SOLVING') {
-                stopTimer();
-            }
+                clearInterval(inspectInterval); state = 'HOLDING'; timerEl.className = 'state-red'; setTimeout(() => { if(state === 'HOLDING') timerEl.className = 'state-green'; }, 300);
+            } else if (state === 'SOLVING') stopTimer();
         }
 
         function handleUp(e) {
             if(e.type === 'keyup' && e.code !== 'Space') return;
-            
             if (state === 'HOLDING') {
-                if (timerEl.classList.contains('state-green')) {
-                    startTimer();
-                } else {
-                    // Nhả ra quá nhanh, quay lại IDLE hoặc Inspecting
-                    state = 'IDLE';
-                    timerEl.className = '';
-                    showUI();
-                    setTimerDisplay('0.00');
-                }
+                if (timerEl.classList.contains('state-green')) startTimer();
+                else { state = 'IDLE'; timerEl.className = ''; showUI(); setTimerDisplay('0.00'); }
             }
         }
 
-        window.addEventListener('keydown', handleDown);
-        window.addEventListener('keyup', handleUp);
+        window.addEventListener('keydown', handleDown); window.addEventListener('keyup', handleUp);
         document.getElementById('timer-container').addEventListener('touchstart', (e) => { e.preventDefault(); handleDown(e); }, {passive: false});
         document.getElementById('timer-container').addEventListener('touchend', (e) => { e.preventDefault(); handleUp(e); }, {passive: false});
-        // Chuột trên PC
-        document.getElementById('timer-container').addEventListener('mousedown', handleDown);
-        document.getElementById('timer-container').addEventListener('mouseup', handleUp);
+        document.getElementById('timer-container').addEventListener('mousedown', handleDown); document.getElementById('timer-container').addEventListener('mouseup', handleUp);
 
-        // --- UI BINDINGS ---
         document.getElementById('settings-btn').onclick = () => document.getElementById('settings-modal').classList.add('active');
         document.getElementById('close-settings').onclick = () => { document.getElementById('settings-modal').classList.remove('active'); saveSettings(); };
-        
-        // Ngăn chặn sự kiện touch lan ra ngoài làm nổi settings khi đang giải
         document.getElementById('settings-modal').addEventListener('touchstart', e => e.stopPropagation());
         
-        // INIT
-        loadSettings();
-        renderHistory();
-
+        loadSettings(); renderHistory();
     </script>
 </body>
 </html>
