@@ -23,7 +23,91 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+            isolation: isolate;
             transition: background-color 0.4s ease, color 0.4s ease;
+            background: linear-gradient(135deg, #060816 0%, #131a33 35%, #0e1c2f 70%, #070b16 100%);
+            background-size: 220% 220%;
+            animation: backgroundShift 18s ease infinite;
+        }
+
+        .background-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .background-layer::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0, 255, 183, 0.20), transparent 24%),
+                radial-gradient(circle at 85% 12%, rgba(110, 95, 255, 0.24), transparent 30%),
+                radial-gradient(circle at 50% 85%, rgba(255, 90, 162, 0.18), transparent 32%);
+            filter: blur(6px);
+            animation: drift 14s ease-in-out infinite alternate;
+        }
+
+        .background-layer::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+            background-size: 120px 120px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 90%);
+            opacity: 0.18;
+            animation: pan 20s linear infinite;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.65;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 320px; height: 320px;
+            top: -80px; left: -100px;
+            background: rgba(18, 210, 190, 0.22);
+        }
+
+        .orb-2 {
+            width: 360px; height: 360px;
+            right: -120px; top: 10%;
+            background: rgba(95, 110, 255, 0.2);
+            animation-duration: 16s;
+        }
+
+        .orb-3 {
+            width: 280px; height: 280px;
+            left: 30%; bottom: -100px;
+            background: rgba(255, 112, 171, 0.16);
+            animation-duration: 14s;
+        }
+
+        .particle-field {
+            position: absolute;
+            inset: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            animation: particleFloat var(--duration, 12s) linear infinite;
+            animation-delay: var(--delay, 0s);
+            opacity: 0.7;
+            top: var(--y); left: var(--x);
         }
 
         .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
@@ -190,6 +274,33 @@
         }
         #delete-all-records:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3); background: #d32f2f !important; }
 
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes drift {
+            0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+            100% { transform: translate3d(2%, 2%, 0) scale(1.06); }
+        }
+
+        @keyframes float {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(20px, 25px, 0) scale(1.08); }
+        }
+
+        @keyframes pan {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-20px, -20px, 0); }
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translate3d(0, 0, 0); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translate3d(30px, -80px, 0); opacity: 0; }
+        }
+
         @media (max-width: 768px) {
             .stats-block, .history-block { opacity: 0.7; } /* More visible on mobile since no hover */
             #timer { font-size: 22vw; }
@@ -200,6 +311,23 @@
     </style>
 </head>
 <body>
+    <div class="background-layer" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="particle-field">
+            <span class="particle" style="--x: 12%; --y: 18%; --delay: 0s; --duration: 14s;"></span>
+            <span class="particle" style="--x: 24%; --y: 72%; --delay: 2s; --duration: 11s;"></span>
+            <span class="particle" style="--x: 34%; --y: 30%; --delay: 3s; --duration: 16s;"></span>
+            <span class="particle" style="--x: 48%; --y: 12%; --delay: 1s; --duration: 13s;"></span>
+            <span class="particle" style="--x: 60%; --y: 64%; --delay: 4s; --duration: 9s;"></span>
+            <span class="particle" style="--x: 72%; --y: 24%; --delay: 5s; --duration: 15s;"></span>
+            <span class="particle" style="--x: 84%; --y: 78%; --delay: 6s; --duration: 10s;"></span>
+            <span class="particle" style="--x: 90%; --y: 36%; --delay: 7s; --duration: 12s;"></span>
+            <span class="particle" style="--x: 16%; --y: 86%; --delay: 8s; --duration: 13s;"></span>
+            <span class="particle" style="--x: 66%; --y: 88%; --delay: 9s; --duration: 11s;"></span>
+        </div>
+    </div>
 
     <div id="timer-container">
         <div id="timer" class="idle-anim">0.00</div>
