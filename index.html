@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minimal Rubik Timer - Float Edition</title>
+    <title>Minimal 3x3 Rubik Cube Timer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -90,27 +90,27 @@
         @keyframes pbPop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes idleGlow { 0% { text-shadow: 0 0 0px transparent; } 100% { text-shadow: 0 0 40px rgba(255,255,255,0.08); } }
 
-        /* MỚI: BOTTOM LAYOUT GỌN GÀNG - TRỐNG TRẢI */
+        /* BOTTOM LAYOUT - CLEAN & SPACIOUS */
         .bottom-layout {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             margin-top: auto;
-            pointer-events: none; /* Tránh cản chuột ở vùng giữa */
+            pointer-events: none; /* Prevent interference in center area */
         }
 
         .stats-block, .history-block {
-            pointer-events: auto; /* Mở lại chuột cho 2 góc */
-            opacity: 0.25; /* Mặc định mờ để nhường chỗ trung tâm */
+            pointer-events: auto; /* Enable interaction on corners */
+            opacity: 0.25; /* Default faded to give center space */
             transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Hiệu ứng khi rê chuột vào 2 bên góc */
+        /* Hover effect on corners */
         .stats-block:hover, .history-block:hover { opacity: 1; }
         .stats-block:hover { transform: translateX(10px) translateY(-5px); }
         .history-block:hover { transform: translateX(-10px) translateY(-5px); }
 
-        /* THỐNG KÊ (BÊN TRÁI) */
+        /* STATS (LEFT SIDE) */
         .stats-block {
             display: flex; flex-direction: column; gap: 12px;
         }
@@ -122,17 +122,17 @@
         .stat-label { font-weight: 300; opacity: 0.6; font-size: 0.95rem; }
         .stat-val { font-weight: 800; font-family: monospace; font-size: 1.2rem; text-align: right;}
 
-        /* LỊCH SỬ (BÊN PHẢI) */
+        /* HISTORY (RIGHT SIDE) */
         .history-block {
             width: 260px;
             max-height: 25vh;
             overflow-y: auto;
-            padding: 20px 0; /* Padding để scroll không cắt chữ */
-            /* Tạo mask mờ dần ở 2 mép trên dưới để cuộn siêu mượt */
+            padding: 20px 0; /* Padding for smooth scrolling */
+            /* Fade mask at top/bottom for smooth scroll effect */
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
         }
-        .history-block::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn cho gọn */
+        .history-block::-webkit-scrollbar { display: none; } /* Hide scrollbar */
 
         .clean-history { list-style: none; font-family: monospace; }
         .history-item { 
@@ -148,7 +148,7 @@
         
         .history-item:hover .h-time { color: var(--accent-color); letter-spacing: 1px; }
 
-        /* Menu Hành động khi click vào History */
+        /* History action menu on click */
         .history-actions { display: flex; gap: 5px; justify-content: space-between; width: 100%; animation: fadeInUp 0.2s forwards; }
         .history-actions button {
             background: rgba(255,255,255,0.08); border: none; color: var(--text-color);
@@ -165,7 +165,7 @@
         }
         #settings-modal.active { opacity: 1; pointer-events: auto; }
         .settings-content { background: #1a1a1a; padding: 40px; border-radius: 20px; width: 90%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .settings-content h2 { margin-bottom: 30px; text-align: center; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; }
+        .settings-content h2 { margin-bottom: 30px; text-align: center; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; font-size: 1.3rem; }
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         input[type="color"] { border: none; border-radius: 8px; width: 35px; height: 35px; cursor: pointer; background: none; padding: 0; }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -183,9 +183,15 @@
             border-radius: 10px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
         }
         #close-settings:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3); }
+        
+        #delete-all-records {
+            width: 100%; padding: 12px; border: none; color: #fff; font-weight: 800;
+            border-radius: 10px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+        }
+        #delete-all-records:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3); background: #d32f2f !important; }
 
         @media (max-width: 768px) {
-            .stats-block, .history-block { opacity: 0.7; } /* Trên đt rõ hơn chút vì không có chuột hover */
+            .stats-block, .history-block { opacity: 0.7; } /* More visible on mobile since no hover */
             #timer { font-size: 22vw; }
             .header { min-height: 100px; padding-top: 10px; }
             #scramble-display { font-size: 1.2rem; padding: 0 10px; }
@@ -201,12 +207,12 @@
 
     <div id="ui-wrapper">
         <div class="header">
-            <div id="scramble-display">Loading scramble...</div>
+            <div id="scramble-display">Generating scramble...</div>
             <button id="settings-btn" class="icon-btn">⚙️</button>
         </div>
 
         <div class="bottom-layout">
-            <!-- Thống kê trái -->
+            <!-- Stats (left) -->
             <div class="stats-block">
                 <div class="stat-line"><span class="stat-label">Solves</span><span id="stat-count" class="stat-val">0</span></div>
                 <div class="stat-line"><span class="stat-label">Best</span><span id="stat-best" class="stat-val">-</span></div>
@@ -214,10 +220,10 @@
                 <div class="stat-line"><span class="stat-label">ao12</span><span id="stat-ao12" class="stat-val">-</span></div>
             </div>
             
-            <!-- Lịch sử phải -->
+            <!-- History (right) -->
             <div class="history-block">
                 <ul class="clean-history" id="history-list">
-                    <!-- JS Render -->
+                    <!-- JavaScript renders history -->
                 </ul>
             </div>
         </div>
@@ -226,32 +232,33 @@
     <!-- Settings Modal -->
     <div id="settings-modal">
         <div class="settings-content">
-            <h2>TÙY CHỈNH</h2>
+            <h2>SETTINGS</h2>
             <div class="setting-row">
-                <label>Bật đếm ngược (15s)</label>
+                <label>Inspection Countdown (15s)</label>
                 <label class="switch"><input type="checkbox" id="set-inspect"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
-                <label>Ẩn giao diện khi giải</label>
+                <label>Hide UI During Solve</label>
                 <label class="switch"><input type="checkbox" id="set-hide-timer"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
-                <label>Hiệu ứng ánh sáng rảnh</label>
+                <label>Idle Light Effect</label>
                 <label class="switch"><input type="checkbox" id="set-idle-anim"><span class="slider"></span></label>
             </div>
             <div class="setting-row">
-                <label>Màu nền</label>
+                <label>Background Color</label>
                 <input type="color" id="set-bg-color">
             </div>
             <div class="setting-row">
-                <label>Màu chữ</label>
+                <label>Text Color</label>
                 <input type="color" id="set-text-color">
             </div>
             <div class="setting-row">
-                <label>Màu nhấn (Nút/Điểm)</label>
+                <label>Accent Color</label>
                 <input type="color" id="set-accent-color">
             </div>
-            <button id="close-settings">XÁC NHẬN</button>
+            <button id="delete-all-records" style="background: #f44336; margin-bottom: 10px;">DELETE ALL RECORDS</button>
+            <button id="close-settings">CONFIRM</button>
         </div>
     </div>
 
@@ -380,7 +387,7 @@
                             <button onclick="modifySolve(${actualIndex-1}, 'ok', event)">OK</button>
                             <button onclick="modifySolve(${actualIndex-1}, '+2', event)">+2</button>
                             <button onclick="modifySolve(${actualIndex-1}, 'dnf', event)">DNF</button>
-                            <button class="btn-del" onclick="modifySolve(${actualIndex-1}, 'del', event)">Xóa</button>
+                            <button class="btn-del" onclick="modifySolve(${actualIndex-1}, 'del', event)">Delete</button>
                         `;
                         li.querySelector('.h-content').style.display = 'none';
                         li.appendChild(actDiv);
@@ -499,6 +506,13 @@
 
         document.getElementById('settings-btn').onclick = () => document.getElementById('settings-modal').classList.add('active');
         document.getElementById('close-settings').onclick = () => { document.getElementById('settings-modal').classList.remove('active'); saveSettings(); };
+        document.getElementById('delete-all-records').onclick = () => {
+            if(confirm('Are you sure you want to delete all records? This action cannot be undone.')) {
+                solves = [];
+                renderHistory();
+                document.getElementById('settings-modal').classList.remove('active');
+            }
+        };
         document.getElementById('settings-modal').addEventListener('touchstart', e => e.stopPropagation());
         
         loadSettings(); renderHistory();
