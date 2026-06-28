@@ -216,6 +216,7 @@
             <div class="stats-block">
                 <div class="stat-line"><span class="stat-label">Solves</span><span id="stat-count" class="stat-val">0</span></div>
                 <div class="stat-line"><span class="stat-label">Best</span><span id="stat-best" class="stat-val">-</span></div>
+                <div class="stat-line"><span class="stat-label">avg</span><span id="stat-avg" class="stat-val">-</span></div>
                 <div class="stat-line"><span class="stat-label">ao5</span><span id="stat-ao5" class="stat-val">-</span></div>
                 <div class="stat-line"><span class="stat-label">ao12</span><span id="stat-ao12" class="stat-val">-</span></div>
             </div>
@@ -267,7 +268,7 @@
         const uiWrapper = document.getElementById('ui-wrapper');
         const scrambleDisplay = document.getElementById('scramble-display');
         const historyList = document.getElementById('history-list');
-        const statsObj = { count: document.getElementById('stat-count'), best: document.getElementById('stat-best'), ao5: document.getElementById('stat-ao5'), ao12: document.getElementById('stat-ao12') };
+        const statsObj = { count: document.getElementById('stat-count'), best: document.getElementById('stat-best'), avg: document.getElementById('stat-avg'), ao5: document.getElementById('stat-ao5'), ao12: document.getElementById('stat-ao12') };
         
         let settings = { inspect: true, hideTimer: false, idleAnim: true, bgColor: '#121212', textColor: '#ffffff', accentColor: '#4CAF50' };
 
@@ -351,6 +352,7 @@
             let validSolves = solves.filter(s => s.penalty !== -1).map(s => s.time + (s.penalty === 2 ? 2000 : 0));
             statsObj.count.innerText = solves.length;
             statsObj.best.innerText = validSolves.length ? formatTime(Math.min(...validSolves)) : '-';
+            statsObj.avg.innerText = validSolves.length ? formatTime(validSolves.reduce((a, b) => a + b, 0) / validSolves.length) : '-';
             statsObj.ao5.innerText = calcAverage(5);
             statsObj.ao12.innerText = calcAverage(12);
         }
