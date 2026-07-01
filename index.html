@@ -553,6 +553,13 @@
 
         function setTimerDisplay(text) { timerEl.innerText = text; }
 
+        function clearFocusedElement() {
+            const activeElement = document.activeElement;
+            if (activeElement && typeof activeElement.blur === 'function') {
+                activeElement.blur();
+            }
+        }
+
         function hideUI() {
             uiWrapper.classList.remove('fade-in-up'); uiWrapper.classList.add('hidden-instant');
             timerEl.classList.remove('idle-anim', 'pb-anim');
@@ -635,13 +642,18 @@
         document.getElementById('timer-container').addEventListener('mousedown', handleDown); document.getElementById('timer-container').addEventListener('mouseup', handleUp);
 
         document.getElementById('settings-btn').onclick = () => document.getElementById('settings-modal').classList.add('active');
-        document.getElementById('close-settings').onclick = () => { document.getElementById('settings-modal').classList.remove('active'); saveSettings(); };
+        document.getElementById('close-settings').onclick = () => {
+            document.getElementById('settings-modal').classList.remove('active');
+            clearFocusedElement();
+            saveSettings();
+        };
         document.getElementById('delete-all-records').onclick = () => {
             if(confirm('Are you sure you want to delete all records? This action cannot be undone.')) {
                 solves = [];
                 renderHistory();
                 document.getElementById('settings-modal').classList.remove('active');
             }
+            clearFocusedElement();
         };
         document.getElementById('settings-modal').addEventListener('touchstart', e => e.stopPropagation());
         
